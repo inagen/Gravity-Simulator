@@ -1,12 +1,13 @@
 #pragma once
-#include <time.h>
-#include <math.h>
+
 
 namespace CONSTS{
+
 	const double G = 6.67384e-11;
 	const double pi = 3.1415926;
 	const int width = 800;
 	const int height = 600;
+
 }
 
 class object{
@@ -21,7 +22,7 @@ public:
 	double acceleration_y = 0;
 
 public:
-	double distance(const object, const object);
+	static double distance(const object, const object);
 	void acceleration(const object obj);
 	object merge(const object obj);	
 };

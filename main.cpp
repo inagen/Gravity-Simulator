@@ -2,5 +2,5 @@
 #include "object.h"
 
 int main(){
-	space world(10);
+	space world(100);
 }
