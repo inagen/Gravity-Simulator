@@ -1,5 +1,5 @@
 #pragma once
-
+#include <SFML/Graphics.hpp>
 
 namespace CONSTS{
 
@@ -12,17 +12,16 @@ namespace CONSTS{
 
 class object{
 public:
+	sf::CircleShape circle;
 	double radius = 1.0;
 	double mas = 10.0;
 	double pos_x;
 	double pos_y;
-	double speed_x = 0;
-	double speed_y = 0;
 	double acceleration_x = 0;
 	double acceleration_y = 0;
 
 public:
 	static double distance(const object, const object);
 	void acceleration(const object obj);
-	object merge(const object obj);	
+	void merge(const object obj);	
 };

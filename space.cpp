@@ -28,20 +28,16 @@ void space::start(){
 
 void space::render_planet(object planet){
 
-	sf::CircleShape circle;
-	circle.setRadius(planet.radius);
-	circle.setFillColor(sf::Color::White);
-	circle.setPosition(planet.pos_x, planet.pos_y);
-	window->draw(circle);
+	planet.circle.setRadius(planet.radius);
+	planet.circle.setFillColor(sf::Color::White);
+	planet.circle.setPosition(planet.pos_x, planet.pos_y);
+	window->draw(planet.circle);
 
 }
 
 void space::apply_changes(){
 
 	for(int i(0); i != planets.size(); ++i){
-		planets[i].speed_x += planets[i].acceleration_x;
-		planets[i].speed_y += planets[i].acceleration_y;
-
 		planets[i].pos_x += planets[i].acceleration_x;
 		planets[i].pos_y += planets[i].acceleration_x;
 		render_planet(planets[i]);
@@ -51,9 +47,9 @@ void space::apply_changes(){
 
 void space::process_all_planets(){
 
-	for(int i = planets.size() - 1; i != 0; --i){
+	for(int i = 0; i != planets.size(); ++i){
 
-		for(int j = 0; j != i; j++){
+		for(int j = 0; j != planets.size(); ++j){
 
 			if(i == j) continue;
 
@@ -61,12 +57,9 @@ void space::process_all_planets(){
 				(planets[i].radius + planets[j].radius)/1.5 || 
 				object::distance(planets[i], planets[j]) == 0){
 
-				planets.push_back(planets[j].merge(planets[i]));
+				planets[j].merge(planets[i]);
 				auto it_i = planets.begin() + i;
-				auto it_j = planets.begin() + j;
 				planets.erase(it_i);
-				planets.erase(it_j);
-
 
 			} else {
 
@@ -89,8 +82,9 @@ void space::process_all_planets(){
 				planets[j].acceleration_x += fGmassItoJ * -direction_x;
 				planets[j].acceleration_y += fGmassItoJ * -direction_y;
 				*/
-				planets[i].acceleration(planets[j]);
 				planets[j].acceleration(planets[i]);
+				planets[i].acceleration(planets[j]);
+				
 			}
 
 		} //for(j)

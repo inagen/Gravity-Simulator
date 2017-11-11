@@ -1,18 +1,12 @@
 #include "object.h"
 #include <math.h>
 
-object object::merge(const object obj){
+void object::merge(const object obj){
 
-	object new_object;
-	new_object.radius = this->radius + obj.radius;
-	new_object.mas = this->mas + obj.mas;
-	new_object.pos_x = this->pos_x;
-	new_object.pos_y = this->pos_y;
-	new_object.speed_x = this->speed_x + obj.speed_x;
-	new_object.speed_y = this->speed_y + obj.speed_y;
-	new_object.acceleration_x = this->acceleration_x + obj.acceleration_x;
-	new_object.acceleration_x = this->acceleration_x + obj.acceleration_x;
-	return new_object;
+	this->radius += obj.radius;
+	this->mas += obj.mas;
+	this->acceleration_x += obj.acceleration_x;
+	this->acceleration_x += obj.acceleration_x;
 
 }
 
@@ -35,8 +29,8 @@ void object::acceleration(const object obj){
 	double phi = atan2(y, x);
 	double nacceleration_x = abs(acceleration) * cos(phi);
 	double nacceleration_y = abs(acceleration) * sin(phi);
-	int direction_x = (this->pos_x > obj.pos_x ? -1 : 1);
-	int direction_y = (this->pos_y > obj.pos_y ? -1 : 1);  
+	int direction_x = (this->pos_x >= obj.pos_x ? -1 : 1);
+	int direction_y = (this->pos_y >= obj.pos_y ? -1 : 1);  
 	this->acceleration_x += nacceleration_x * direction_x * 1000000; // very big number
 	this->acceleration_y += nacceleration_y * direction_y * 1000000; 
 
