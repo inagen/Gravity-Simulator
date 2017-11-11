@@ -112,16 +112,3 @@ void space::main_loop(){
 
 	}
 }
-
-void space::add_object(int x, int y, int r, int m, double ax, double ay){
-
-	object new_object;
-	new_object.pos_x = x;
-	new_object.pos_y = y;
-	new_object.radius = r;
-	new_object.mas = m;
-	new_object.acceleration_x = ax;
-	new_object.acceleration_y = ay;
-	planets.push_back(new_object);
-
-}
