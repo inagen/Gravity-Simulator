@@ -9,8 +9,9 @@ private:
 	sf::RenderWindow* window;
 public:
 	space(unsigned int number_of_planets);
+	space();
 	void start();
-	void all_planets_processing();
+	void process_all_planets();
 	void apply_changes();
 	void main_loop();
 	void render_planet(object planet);

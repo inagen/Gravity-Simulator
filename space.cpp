@@ -1,5 +1,6 @@
 #include "space.h"
 #include <time.h>
+#include <cmath>
 
 space::space(unsigned int number_of_planets){
 
@@ -12,6 +13,12 @@ space::space(unsigned int number_of_planets){
 	}
 	start();
 
+}
+
+space::space(){
+	srand( time(0) );
+	//window = new sf::RenderWindow(sf::VideoMode(CONSTS::width, CONSTS::height), "Gravity++");
+	//start();
 }
 
 void space::start(){
@@ -35,21 +42,24 @@ void space::apply_changes(){
 		planets[i].speed_x += planets[i].acceleration_x;
 		planets[i].speed_y += planets[i].acceleration_y;
 
-		planets[i].pos_x += planets[i].speed_x;
-		planets[i].pos_y += planets[i].speed_y;
+		planets[i].pos_x += planets[i].acceleration_x;
+		planets[i].pos_y += planets[i].acceleration_x;
 		render_planet(planets[i]);
 	}
 
 }
 
-void space::all_planets_processing(){
+void space::process_all_planets(){
 
-	for(int i = planets.size(); i != 0; --i){
+	for(int i = planets.size() - 1; i != 0; --i){
 
 		for(int j = 0; j != i; j++){
 
-			if( object::distance(planets[i], planets[j]) <= planets[i].radius ||
-				object::distance(planets[i], planets[j]) <= planets[j].radius){
+			if(i == j) continue;
+
+			if( object::distance(planets[i], planets[j]) <= 
+				(planets[i].radius + planets[j].radius)/1.5 || 
+				object::distance(planets[i], planets[j]) == 0){
 
 				planets.push_back(planets[j].merge(planets[i]));
 				auto it_i = planets.begin() + i;
@@ -57,7 +67,28 @@ void space::all_planets_processing(){
 				planets.erase(it_i);
 				planets.erase(it_j);
 
+
 			} else {
+
+				/*double dist = object::distance(planets[i], planets[j]);
+
+				double fG = (planets.at(i).mas * planets.at(j).mas / pow(dist, 2)) / 5000;
+
+				double massJtoI = (planets[j].mas / planets[i].mas);
+				double massItoJ = (planets[i].mas / planets[j].mas);
+
+				double fGmassJtoI = fG * massJtoI;
+				double fGmassItoJ = fG * massItoJ;
+
+				int direction_x = planets[i].pos_x > planets[j].pos_x ? -1 : 1;
+				int direction_y = planets[i].pos_y > planets[j].pos_y ? -1 : 1;
+
+				planets[i].acceleration_x += fGmassJtoI * direction_x;
+				planets[i].acceleration_y += fGmassJtoI * direction_y;
+
+				planets[j].acceleration_x += fGmassItoJ * -direction_x;
+				planets[j].acceleration_y += fGmassItoJ * -direction_y;
+				*/
 				planets[i].acceleration(planets[j]);
 				planets[j].acceleration(planets[i]);
 			}
@@ -81,7 +112,7 @@ void space::main_loop(){
 		}
 
 		window->clear();
-		all_planets_processing();
+		process_all_planets();
 		apply_changes();
 		window->display();
 

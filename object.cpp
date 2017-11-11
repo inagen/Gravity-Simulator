@@ -35,7 +35,9 @@ void object::acceleration(const object obj){
 	double phi = atan2(y, x);
 	double nacceleration_x = abs(acceleration) * cos(phi);
 	double nacceleration_y = abs(acceleration) * sin(phi);
-	this->acceleration_x += nacceleration_x;
-	this->acceleration_y += nacceleration_y; 
+	int direction_x = (this->pos_x > obj.pos_x ? -1 : 1);
+	int direction_y = (this->pos_y > obj.pos_y ? -1 : 1);  
+	this->acceleration_x += nacceleration_x * direction_x * 1000000; // very big number
+	this->acceleration_y += nacceleration_y * direction_y * 1000000; 
 
 }

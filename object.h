@@ -13,7 +13,7 @@ namespace CONSTS{
 class object{
 public:
 	double radius = 1.0;
-	double mas = 100.0;
+	double mas = 10.0;
 	double pos_x;
 	double pos_y;
 	double speed_x = 0;
