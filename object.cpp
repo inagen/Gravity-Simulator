@@ -7,8 +7,8 @@ void object::merge(const object &obj){
 	double massJtoI = (this->mas / obj.mas);
 	double massItoJ = (obj.mas / this->mas);
 
-	this->radius += obj.radius;
-	this->mas += obj.mas;
+	this->radius += obj.radius / 2;
+	this->mas += obj.mas * 0.7;
 
 
 	this->acceleration_x += obj.acceleration_x * massItoJ / 2;
