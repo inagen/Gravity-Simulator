@@ -5,12 +5,7 @@
 space::space(unsigned int number_of_planets){
 
 	srand( time(0) );
-	object temp;
-	for(int i(0); i <= number_of_planets; i++){
-		temp.pos_x = rand() % CONSTS::width  + 1;
-		temp.pos_y = rand() % CONSTS::height + 1;
-		planets.push_back(temp);
-	}
+	generate(number_of_planets);
 	start();
 
 }
@@ -19,6 +14,19 @@ space::space(){
 	srand( time(0) );
 	//window = new sf::RenderWindow(sf::VideoMode(CONSTS::width, CONSTS::height), "Gravity++");
 	//start();
+}
+
+void space::generate(unsigned int number_of_planets){
+	object temp;
+	planets.reserve(number_of_planets);
+	for (int i(0); i < number_of_planets; i++) {
+		temp.pos_x = rand() % CONSTS::width + 1;
+		temp.pos_y = rand() % CONSTS::height + 1;
+		temp.acceleration_x = rand() % 2 - 1;
+		temp.acceleration_y = rand() % 2 - 1;
+
+		planets.push_back(temp);
+	}
 }
 
 void space::start(){
