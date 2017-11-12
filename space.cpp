@@ -28,10 +28,11 @@ void space::start(){
 
 void space::render_planet(object planet){
 
-	planet.circle.setRadius(planet.radius);
-	planet.circle.setFillColor(sf::Color::White);
-	planet.circle.setPosition(planet.pos_x, planet.pos_y);
-	window->draw(planet.circle);
+	sf::CircleShape circle;
+	circle.setRadius(planet.radius);
+	circle.setFillColor(sf::Color::White);
+	circle.setPosition(planet.pos_x, planet.pos_y);
+	window->draw(circle);
 
 }
 

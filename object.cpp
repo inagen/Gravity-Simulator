@@ -1,4 +1,5 @@
 #include "object.h"
+#include <SFML/Graphics.hpp>
 #include <math.h>
 
 void object::merge(const object obj){

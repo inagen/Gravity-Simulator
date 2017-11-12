@@ -1,5 +1,4 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 
 namespace CONSTS{
 
@@ -18,7 +17,6 @@ public:
 	double pos_y;
 	double acceleration_x = 0;
 	double acceleration_y = 0;
-	sf::CircleShape circle = sf::CircleShape();
 
 public:
 	static double distance(const object, const object);
