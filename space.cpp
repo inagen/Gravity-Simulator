@@ -48,9 +48,9 @@ void space::apply_changes(){
 
 void space::process_all_planets(){
 
-	for(int i = 0; i != planets.size(); ++i){
+	for(int i = 0; i < planets.size(); ++i){
 
-		for(int j = 0; j != planets.size(); ++j){
+		for(int j = 0; j < planets.size(); ++j){
 
 			if(i == j) continue;
 
