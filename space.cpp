@@ -5,12 +5,7 @@
 space::space(unsigned int number_of_planets){
 
 	srand( time(0) );
-	object temp;
-	for(int i(0); i <= number_of_planets; i++){
-		temp.pos_x = rand() % CONSTS::width  + 1;
-		temp.pos_y = rand() % CONSTS::height + 1;
-		planets.push_back(temp);
-	}
+	generate(number_of_planets);
 	start();
 
 }
@@ -21,17 +16,35 @@ space::space(){
 	//start();
 }
 
+void space::generate(unsigned int number_of_planets){
+	object temp;
+	planets.reserve(number_of_planets);
+	for (int i(0); i < number_of_planets; i++) {
+		temp.pos_x = rand() % CONSTS::width + 1;
+		temp.pos_y = rand() % CONSTS::height + 1;
+		temp.acceleration_x = rand() % 2 - 1;
+		temp.acceleration_y = rand() % 2 - 1;
+
+		planets.push_back(temp);
+	}
+}
+
 void space::start(){
 	window = new sf::RenderWindow(sf::VideoMode(CONSTS::width, CONSTS::height), "Gravity++");
 	main_loop();
 }
 
+void space::clear(){
+	planets.clear();
+}
+
 void space::render_planet(object planet){
 
-	planet.circle.setRadius(planet.radius);
-	planet.circle.setFillColor(sf::Color::White);
-	planet.circle.setPosition(planet.pos_x, planet.pos_y);
-	window->draw(planet.circle);
+	sf::CircleShape circle;
+	circle.setRadius(planet.radius);
+	circle.setFillColor(sf::Color::White);
+	circle.setPosition(planet.pos_x, planet.pos_y);
+	window->draw(circle);
 
 }
 
@@ -39,7 +52,7 @@ void space::apply_changes(){
 
 	for(int i(0); i != planets.size(); ++i){
 		planets[i].pos_x += planets[i].acceleration_x;
-		planets[i].pos_y += planets[i].acceleration_x;
+		planets[i].pos_y += planets[i].acceleration_y;
 		render_planet(planets[i]);
 	}
 
@@ -47,9 +60,9 @@ void space::apply_changes(){
 
 void space::process_all_planets(){
 
-	for(int i = 0; i != planets.size(); ++i){
+	for(int i = 0; i < planets.size(); ++i){
 
-		for(int j = 0; j != planets.size(); ++j){
+		for(int j = 0; j < planets.size(); ++j){
 
 			if(i == j) continue;
 
@@ -58,9 +71,14 @@ void space::process_all_planets(){
 				object::distance(planets[i], planets[j]) == 0){
 
 				planets[j].merge(planets[i]);
+
 				auto it_i = planets.begin() + i;
 				planets.erase(it_i);
 
+				// it is possible that we are shrink our vector and i become out-of-bounds.
+				if (i >= planets.size()) {
+					break;
+				}
 			} else {
 
 				/*double dist = object::distance(planets[i], planets[j]);
@@ -104,7 +122,14 @@ void space::main_loop(){
 				window->close();
 
 		}
-
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)){
+			this->clear();
+			this->generate(200);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+			window->close();
+			break;
+		}
 		window->clear();
 		process_all_planets();
 		apply_changes();

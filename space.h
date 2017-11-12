@@ -19,5 +19,7 @@ public:
 	space(unsigned int number_of_planets);
 	space();
 	void start();
+	void clear();
+	void generate(unsigned int number_of_planets);
 	void add_object(int, int, int, int, double, double);
 };
