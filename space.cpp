@@ -122,7 +122,10 @@ void space::main_loop(){
 				window->close();
 
 		}
-
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)){
+			this->clear();
+			this->generate(200);
+		}
 		window->clear();
 		process_all_planets();
 		apply_changes();
