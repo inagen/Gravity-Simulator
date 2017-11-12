@@ -7,7 +7,7 @@ void object::merge(const object obj){
 	this->radius += obj.radius;
 	this->mas += obj.mas;
 	this->acceleration_x += obj.acceleration_x;
-	this->acceleration_x += obj.acceleration_x;
+	this->acceleration_y += obj.acceleration_y;
 
 }
 

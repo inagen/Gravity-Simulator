@@ -40,7 +40,7 @@ void space::apply_changes(){
 
 	for(int i(0); i != planets.size(); ++i){
 		planets[i].pos_x += planets[i].acceleration_x;
-		planets[i].pos_y += planets[i].acceleration_x;
+		planets[i].pos_y += planets[i].acceleration_y;
 		render_planet(planets[i]);
 	}
 
