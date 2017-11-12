@@ -4,10 +4,15 @@
 
 void object::merge(const object &obj){
 
+	double massJtoI = (this->mas / obj.mas);
+	double massItoJ = (obj.mas / this->mas);
+
 	this->radius += obj.radius;
 	this->mas += obj.mas;
-	this->acceleration_x += obj.acceleration_x;
-	this->acceleration_y += obj.acceleration_y;
+
+
+	this->acceleration_x += obj.acceleration_x * massItoJ / 2;
+	this->acceleration_y += obj.acceleration_y * massItoJ / 2;
 
 }
 
@@ -32,7 +37,7 @@ void object::acceleration(const object &obj){
 	double nacceleration_y = abs(acceleration) * sin(phi);
 	int direction_x = (this->pos_x >= obj.pos_x ? -1 : 1);
 	int direction_y = (this->pos_y >= obj.pos_y ? -1 : 1);  
-	this->acceleration_x += nacceleration_x * direction_x * 1000000; // very big number
-	this->acceleration_y += nacceleration_y * direction_y * 1000000; 
+	this->acceleration_x += nacceleration_x * direction_x * 100000; // very big number
+	this->acceleration_y += nacceleration_y * direction_y * 100000; 
 
 }

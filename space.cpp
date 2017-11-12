@@ -12,8 +12,6 @@ space::space(unsigned int number_of_planets){
 
 space::space(){
 	srand( time(0) );
-	//window = new sf::RenderWindow(sf::VideoMode(CONSTS::width, CONSTS::height), "Gravity++");
-	//start();
 }
 
 void space::generate(unsigned int number_of_planets){
@@ -22,8 +20,8 @@ void space::generate(unsigned int number_of_planets){
 	for (int i(0); i < number_of_planets; i++) {
 		temp.pos_x = rand() % CONSTS::width + 1;
 		temp.pos_y = rand() % CONSTS::height + 1;
-		temp.acceleration_x = rand() % 2 - 1;
-		temp.acceleration_y = rand() % 2 - 1;
+		//temp.acceleration_x = rand() % 2 - 1;
+		//temp.acceleration_y = rand() % 2 - 1;
 
 		planets.push_back(temp);
 	}
@@ -67,14 +65,18 @@ void space::process_all_planets(){
 			if(i == j) continue;
 
 			if( object::distance(planets[i], planets[j]) <= 
-				(planets[i].radius + planets[j].radius)/1.5 || 
+				(planets[i].radius + planets[j].radius) || 
 				object::distance(planets[i], planets[j]) == 0){
 
-				planets[j].merge(planets[i]);
-
-				auto it_i = planets.begin() + i;
-				planets.erase(it_i);
-
+				if(planets[j].mas > planets[i].mas){
+					planets[j].merge(planets[i]);
+					auto it_i = planets.begin() + i;
+					planets.erase(it_i);
+				} else {
+					planets[i].merge(planets[j]);
+					auto it_j = planets.begin() + j;
+					planets.erase(it_j);
+				}
 				// it is possible that we are shrink our vector and i become out-of-bounds.
 				if (i >= planets.size()) {
 					break;
@@ -84,9 +86,6 @@ void space::process_all_planets(){
 				/*double dist = object::distance(planets[i], planets[j]);
 
 				double fG = (planets.at(i).mas * planets.at(j).mas / pow(dist, 2)) / 5000;
-
-				double massJtoI = (planets[j].mas / planets[i].mas);
-				double massItoJ = (planets[i].mas / planets[j].mas);
 
 				double fGmassJtoI = fG * massJtoI;
 				double fGmassItoJ = fG * massItoJ;
