@@ -34,6 +34,10 @@ void space::start(){
 	main_loop();
 }
 
+void space::clear(){
+	planets.clear();
+}
+
 void space::render_planet(object planet){
 
 	sf::CircleShape circle;
