@@ -6,6 +6,7 @@
 class space{
 private:
 	sf::RenderWindow* window;
+	double zoom;
 
 public:
 	std::vector<object> planets;

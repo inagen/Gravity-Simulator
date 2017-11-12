@@ -5,12 +5,14 @@
 space::space(unsigned int number_of_planets){
 
 	srand( time(0) );
+	zoom = 1;
 	generate(number_of_planets);
 	start();
 
 }
 
 space::space(){
+	zoom = 1;
 	srand( time(0) );
 }
 
@@ -20,9 +22,6 @@ void space::generate(unsigned int number_of_planets){
 	for (int i(0); i < number_of_planets; i++) {
 		temp.pos_x = rand() % CONSTS::width + 1;
 		temp.pos_y = rand() % CONSTS::height + 1;
-		//temp.acceleration_x = rand() % 2 - 1;
-		//temp.acceleration_y = rand() % 2 - 1;
-
 		planets.push_back(temp);
 	}
 }
@@ -83,22 +82,6 @@ void space::process_all_planets(){
 				}
 			} else {
 
-				/*double dist = object::distance(planets[i], planets[j]);
-
-				double fG = (planets.at(i).mas * planets.at(j).mas / pow(dist, 2)) / 5000;
-
-				double fGmassJtoI = fG * massJtoI;
-				double fGmassItoJ = fG * massItoJ;
-
-				int direction_x = planets[i].pos_x > planets[j].pos_x ? -1 : 1;
-				int direction_y = planets[i].pos_y > planets[j].pos_y ? -1 : 1;
-
-				planets[i].acceleration_x += fGmassJtoI * direction_x;
-				planets[i].acceleration_y += fGmassJtoI * direction_y;
-
-				planets[j].acceleration_x += fGmassItoJ * -direction_x;
-				planets[j].acceleration_y += fGmassItoJ * -direction_y;
-				*/
 				planets[j].acceleration(planets[i]);
 				planets[i].acceleration(planets[j]);
 				
@@ -129,9 +112,21 @@ void space::main_loop(){
 			window->close();
 			break;
 		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)){
+			if(zoom < 10)
+				zoom = zoom + 0.1;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Dash)){
+			if(zoom > 0)
+				zoom = zoom - 0.1;
+		}
+
 		window->clear();
 		process_all_planets();
 		apply_changes();
+		sf::View view = window->getDefaultView();
+		view.zoom(zoom);
+		window->setView(view);
 		window->display();
 
 	}
