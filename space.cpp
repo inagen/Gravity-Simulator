@@ -126,6 +126,10 @@ void space::main_loop(){
 			this->clear();
 			this->generate(200);
 		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+			window->close();
+			break;
+		}
 		window->clear();
 		process_all_planets();
 		apply_changes();
