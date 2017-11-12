@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 
-void object::merge(const object obj){
+void object::merge(const object &obj){
 
 	this->radius += obj.radius;
 	this->mas += obj.mas;
@@ -11,7 +11,7 @@ void object::merge(const object obj){
 
 }
 
-double object::distance(const object obj1, const object obj2){
+double object::distance(const object &obj1, const object &obj2){
 	auto x1 = obj1.pos_x;
 	auto y1 = obj1.pos_y;
 	auto x2 = obj2.pos_x;
@@ -21,7 +21,7 @@ double object::distance(const object obj1, const object obj2){
 	return distance;
 }
 
-void object::acceleration(const object obj){
+void object::acceleration(const object &obj){
 
 	double dist = distance(*this, obj);
 	double acceleration = CONSTS::G * ( obj.mas/(obj.radius + dist) );

@@ -19,7 +19,7 @@ public:
 	double acceleration_y = 0;
 
 public:
-	static double distance(const object, const object);
-	void acceleration(const object obj);
-	void merge(const object obj);	
+	static double distance(const object &, const object &);
+	void acceleration(const object &obj);
+	void merge(const object &obj);
 };
