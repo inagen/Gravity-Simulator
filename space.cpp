@@ -59,9 +59,14 @@ void space::process_all_planets(){
 				object::distance(planets[i], planets[j]) == 0){
 
 				planets[j].merge(planets[i]);
+
 				auto it_i = planets.begin() + i;
 				planets.erase(it_i);
 
+				// it is possible that we are shrink our vector and i become out-of-bounds.
+				if (i >= planets.size()) {
+					break;
+				}
 			} else {
 
 				/*double dist = object::distance(planets[i], planets[j]);
