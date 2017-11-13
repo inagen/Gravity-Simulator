@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/c++,linux
+# Created by https://www.gitignore.io/api/c++,linux,cmake
 
 ### C++ ###
 # Prerequisites
@@ -50,5 +50,17 @@
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
-# End of https://www.gitignore.io/api/c++,linux
+### CMake ###
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+build
+
+# End of https://www.gitignore.io/api/c++,linux,cmake
  
