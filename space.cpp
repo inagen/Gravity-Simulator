@@ -36,6 +36,7 @@ void space::start(){
 }
 
 void space::clear(){
+    std::lock_guard<std::mutex> lock(planets_access_mutex);
 	planets.clear();
 }
 
@@ -58,7 +59,11 @@ void space::draw_all_planets(){
 }
 
 void space::process_all_planets(){
-    std::vector<object> new_planets_state = planets;
+    std::vector<object> new_planets_state;
+    {
+        std::lock_guard<std::mutex> lock(planets_access_mutex);
+        new_planets_state = planets;
+    }
 
 	for(int i = 0; i < new_planets_state.size(); ++i){
 
@@ -101,8 +106,19 @@ void space::process_all_planets(){
 }
 
 void space::logic_loop(){
+    static const unsigned tps_limit_base = 1000;
+
+    sf::Clock tps_counter_reset;
+    unsigned tps = 0;
     while (window->isOpen()){
+        if (tps_counter_reset.getElapsedTime() >= sf::seconds(1)){
+            tps = 0;
+            tps_counter_reset.restart();
+        }
+
+        sf::sleep(sf::seconds(1.0/(tps_limit_base * tps_limit_multipler)));
         process_all_planets();
+        ++tps;
     }
 }
 

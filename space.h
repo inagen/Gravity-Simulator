@@ -26,4 +26,6 @@ public:
 	void clear();
 	void generate(unsigned int number_of_planets);
 	void add_object(int, int, int, int, double, double);
+
+    float tps_limit_multipler = 1.0;
 };
