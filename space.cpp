@@ -1,6 +1,7 @@
 #include "space.h"
 #include <time.h>
 #include <cmath>
+#include <thread>
 
 space::space(unsigned int number_of_planets){
 
@@ -17,6 +18,7 @@ space::space(){
 }
 
 void space::generate(unsigned int number_of_planets){
+    std::lock_guard<std::mutex> lock(planets_access_mutex);
 	object temp;
 	planets.reserve(number_of_planets);
 	for (int i(0); i < number_of_planets; i++) {
@@ -28,10 +30,13 @@ void space::generate(unsigned int number_of_planets){
 
 void space::start(){
 	window = new sf::RenderWindow(sf::VideoMode(CONSTS::width, CONSTS::height), "Gravity++");
-	main_loop();
+    std::thread physics_thread(&space::logic_loop, this);
+	render_event_loop();
+    if (physics_thread.joinable()) physics_thread.join();
 }
 
 void space::clear(){
+    std::lock_guard<std::mutex> lock(planets_access_mutex);
 	planets.clear();
 }
 
@@ -45,55 +50,79 @@ void space::render_planet(object planet){
 
 }
 
-void space::apply_changes(){
-
+void space::draw_all_planets(){
+    std::lock_guard<std::mutex> lock(planets_access_mutex);
 	for(int i(0); i != planets.size(); ++i){
-		planets[i].pos_x += planets[i].acceleration_x;
-		planets[i].pos_y += planets[i].acceleration_y;
 		render_planet(planets[i]);
 	}
 
 }
 
 void space::process_all_planets(){
+    std::vector<object> new_planets_state;
+    {
+        std::lock_guard<std::mutex> lock(planets_access_mutex);
+        new_planets_state = planets;
+    }
 
-	for(int i = 0; i < planets.size(); ++i){
+	for(int i = 0; i < new_planets_state.size(); ++i){
 
-		for(int j = 0; j < planets.size(); ++j){
+		for(int j = 0; j < new_planets_state.size(); ++j){
 
 			if(i == j) continue;
 
-			if( object::distance(planets[i], planets[j]) <= 
-				(planets[i].radius + planets[j].radius) || 
-				object::distance(planets[i], planets[j]) == 0){
+            // TODO: Is distance computation expensive?
+			if( object::distance(new_planets_state[i], new_planets_state[j]) <=
+				(new_planets_state[i].radius + new_planets_state[j].radius) ||
+				object::distance(new_planets_state[i], new_planets_state[j]) == 0){
 
-				if(planets[j].mas > planets[i].mas){
-					planets[j].merge(planets[i]);
-					auto it_i = planets.begin() + i;
-					planets.erase(it_i);
+				if(new_planets_state[j].mas > new_planets_state[i].mas){
+					new_planets_state[j].merge(new_planets_state[i]);
+					auto it_i = new_planets_state.begin() + i;
+					new_planets_state.erase(it_i);
 				} else {
-					planets[i].merge(planets[j]);
-					auto it_j = planets.begin() + j;
-					planets.erase(it_j);
+					new_planets_state[i].merge(new_planets_state[j]);
+					auto it_j = new_planets_state.begin() + j;
+                    // TODO: Does it worth optimizing out this costly erase?
+					new_planets_state.erase(it_j);
 				}
 				// it is possible that we are shrink our vector and i become out-of-bounds.
-				if (i >= planets.size()) {
+				if (i >= new_planets_state.size()) {
 					break;
 				}
 			} else {
 
-				planets[j].acceleration(planets[i]);
-				planets[i].acceleration(planets[j]);
-				
+				new_planets_state[j].acceleration(new_planets_state[i]);
+				new_planets_state[i].acceleration(new_planets_state[j]);
 			}
 
 		} //for(j)
-	} //for (i)
 
+        new_planets_state[i].pos_x += new_planets_state[i].acceleration_x;
+        new_planets_state[i].pos_y += new_planets_state[i].acceleration_y;
+	} //for (i)
+    std::lock_guard<std::mutex> lock(planets_access_mutex);
+    planets = new_planets_state;
 }
 
+void space::logic_loop(){
+    static const unsigned tps_limit_base = 1000;
 
-void space::main_loop(){
+    sf::Clock tps_counter_reset;
+    unsigned tps = 0;
+    while (window->isOpen()){
+        if (tps_counter_reset.getElapsedTime() >= sf::seconds(1)){
+            tps = 0;
+            tps_counter_reset.restart();
+        }
+
+        sf::sleep(sf::seconds(1.0/(tps_limit_base * tps_limit_multipler)));
+        process_all_planets();
+        ++tps;
+    }
+}
+
+void space::render_event_loop(){
 
 	while (window->isOpen()){
 
@@ -122,8 +151,7 @@ void space::main_loop(){
 		}
 
 		window->clear();
-		process_all_planets();
-		apply_changes();
+		draw_all_planets();
 		sf::View view = window->getDefaultView();
 		view.zoom(zoom);
 		window->setView(view);
